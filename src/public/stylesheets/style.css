@@ -1,0 +1,87 @@
+body {
+  padding: 100px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+body .addresses {
+  padding: 5px;
+  display: inline-block;
+  margin-right: 2em;
+  vertical-align: top;
+}
+
+body .addresses .header {
+  padding-bottom: 5px;
+  font-weight: 700;
+  font-size: 1.5em;
+}
+
+body .next-nonce {
+  padding: 5px;
+  display: inline-block;
+  margin-right: 2em;
+  vertical-align: top;
+}
+
+body .next-nonce .header {
+  padding-bottom: 5px;
+  font-weight: 700;
+  font-size: 1.2em;
+}
+
+body .transactions {
+  padding: 5px;
+  margin-top: 2em;
+  margin-right: 2em;
+  vertical-align: top;
+}
+
+body .transactions .header {
+  padding-bottom: 5px;
+  font-weight: 700;
+  font-size: 1.5em;
+}
+
+table {
+  border:none;
+  border-collapse: collapse;
+}
+
+table th {
+  font-size: 1.2em;
+  padding: 0.5em;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+table th:first-child {
+  border-left: none;
+}
+
+table th:last-child {
+  border-right: none;
+}
+
+table td {
+  padding: 0.5em;
+  text-align: center;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+table td:first-child {
+  border-left: none;
+}
+
+table td:last-child {
+  border-right: none;
+}
+
+.txId {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.status {
+  font-weight: bold;
+}
