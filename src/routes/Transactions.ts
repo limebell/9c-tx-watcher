@@ -100,18 +100,37 @@ setInterval(async () => {
       (value: { id: string }) => value.id
     );
 
+  const storedTransactions = await transactionDao.getAll();
+
+  function getTxOfId(txId: string): Transaction | null {
+    for (let i: number = 0; i < storedTransactions.length; i++) {
+      if (storedTransactions[i].txId == txId) {
+        return storedTransactions[i];
+      }
+    }
+    return null;
+  }
+
   stagedTransactions = sourceTxs?.map(
     (value: { actions: any[]; id: any; nonce: any; timestamp: any }) => {
-      const transaction: Transaction = {
-        actions: value.actions.map((action) => getTypeId(action.inspection)),
-        txId: value.id,
-        nonce: value.nonce,
-        createdAt: value.timestamp,
-        status: TransactionStatus.Pending,
-      };
+      let stored = getTxOfId(value.id);
+      let transaction: Transaction;
+      if (stored === null) {
+        transaction = {
+          actions: value.actions.map((action) => getTypeId(action.inspection)),
+          txId: value.id,
+          nonce: value.nonce,
+          createdAt: value.timestamp,
+          status: TransactionStatus.Pending1,
+        };
+      } else {
+        transaction = stored;
+      }
 
       if (targetTxIds?.includes(transaction.txId)) {
         transaction.status = TransactionStatus.Staged;
+      } else if (transaction.status == TransactionStatus.Staged) {
+        transaction.status = TransactionStatus.Pending2;
       }
 
       transactionDao.update(transaction);
@@ -120,13 +139,16 @@ setInterval(async () => {
     }
   );
 
+  console.log("Staged Transactions: " + stagedTransactions);
+
   const transactions = await transactionDao.getAll();
   if (transactions !== undefined) {
     const promises = transactions
       .filter(
         (value) =>
-          value.status === TransactionStatus.Pending ||
-          value.status === TransactionStatus.Staged
+          value.status === TransactionStatus.Pending1 ||
+          value.status === TransactionStatus.Staged ||
+          value.status === TransactionStatus.Pending2
       )
       .map(async (value) => {
         // If transaction is no more staged, check storage to find out whether it is stored or discarded.
@@ -157,7 +179,6 @@ setInterval(async () => {
 
 let sourceAddress: string | undefined = undefined;
 let targetAddress: string | undefined = undefined;
-let nextNonce: number;
 let stagedTransactions: Array<Transaction>;
 
 /**

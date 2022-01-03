@@ -1,6 +1,7 @@
 export enum TransactionStatus {
-  Pending,
+  Pending1,
   Staged,
+  Pending2,
   Included,
   Discarded,
 }

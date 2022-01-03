@@ -3,8 +3,9 @@
  ******************************************************************************/
 
 var TransactionStatus = [
-  '<span style="color:orange">Pending</span>',
+  '<span style="color:orange">Pending1</span>',
   '<span style="color:blue">Staged</span>',
+  '<span style="color:purple">Pending2</span>',
   '<span style="color:green">Included</span>',
   '<span style="color:red">Discarded</span>',
 ];
