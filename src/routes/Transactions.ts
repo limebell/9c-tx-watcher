@@ -9,6 +9,7 @@ import {
   StagedTransactionsQuery,
   StoredTransactionQuery,
 } from "../graphql";
+import { WebHook } from "src/slack";
 
 const transactionDao = new TransactionDao();
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
@@ -18,6 +19,14 @@ const SOURCE_ENDPOINT: string = process.env.SOURCE_ENDPOINT
 const TARGET_ENDPOINT: string = process.env.TARGET_ENDPOINT
   ? process.env.TARGET_ENDPOINT
   : "";
+const webHook = process.env.WEBHOOK
+  ? new WebHook(process.env.WEBHOOK)
+  : undefined;
+// Warn every 60 seconds.
+const WARN_TIMEOUT: number = process.env.WARN_TIMEOUT
+  ? parseInt(process.env.WARN_TIMEOUT)
+  : 60 * 1000;
+const lastWarnedMap = new Map<string, Date>();
 
 async function RequestAsync(
   endpoint: string,
@@ -111,6 +120,7 @@ setInterval(async () => {
     return null;
   }
 
+  let logMessages = "";
   stagedTransactions = sourceTxs?.map(
     (value: { actions: any[]; id: any; nonce: any; timestamp: any }) => {
       let stored = getTxOfId(value.id);
@@ -131,6 +141,25 @@ setInterval(async () => {
         transaction.status = TransactionStatus.Staged;
       } else if (transaction.status == TransactionStatus.Staged) {
         transaction.status = TransactionStatus.Pending2;
+      } else if (transaction.status == TransactionStatus.Pending1) {
+        // Warn via slack that the transaction with id is pending for long time.
+        const id = transaction.txId;
+        const createdAt = transaction.createdAt;
+        let lastWarned = lastWarnedMap.get(id);
+        lastWarned =
+          lastWarned === undefined ? new Date(createdAt) : lastWarned;
+        const elapsed = new Date().valueOf() - lastWarned.valueOf();
+
+        if (elapsed > WARN_TIMEOUT) {
+          console.log("Sending warning message");
+          logMessages +=
+            'Transaction "' +
+            id +
+            '" is pending for ' +
+            (new Date().valueOf() - new Date(createdAt).valueOf()) / 1000 +
+            " seconds.\n";
+          lastWarnedMap.set(id, new Date());
+        }
       }
 
       transactionDao.update(transaction);
@@ -138,8 +167,6 @@ setInterval(async () => {
       return transaction;
     }
   );
-
-  console.log("Staged Transactions: " + stagedTransactions);
 
   const transactions = await transactionDao.getAll();
   if (transactions !== undefined) {
@@ -164,8 +191,17 @@ setInterval(async () => {
             { id: id }
           );
 
+          lastWarnedMap.delete(id);
+
           if (storedTransaction === undefined || storedTransaction === null) {
             value.status = TransactionStatus.Discarded;
+            logMessages +=
+              'Transaction "' +
+              id +
+              '" is discarded after ' +
+              (new Date().valueOf() - new Date(value.createdAt).valueOf()) /
+                1000 +
+              " seconds.";
           } else {
             value.status = TransactionStatus.Included;
           }
@@ -174,6 +210,11 @@ setInterval(async () => {
       });
 
     await Promise.all(promises);
+  }
+
+  if (logMessages !== "") {
+    logMessages.trimEnd();
+    webHook?.send(logMessages);
   }
 }, 1000);
 
