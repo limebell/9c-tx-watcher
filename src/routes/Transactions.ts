@@ -9,7 +9,7 @@ import {
   StagedTransactionsQuery,
   StoredTransactionQuery,
 } from "../graphql";
-import { WebHook } from "src/slack";
+import { WebHook } from "../slack";
 
 const transactionDao = new TransactionDao();
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
