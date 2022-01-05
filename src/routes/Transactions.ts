@@ -1,4 +1,4 @@
-import { gql, request } from "graphql-request";
+import { ClientError, request } from "graphql-request";
 import StatusCodes from "http-status-codes";
 import { Request, Response } from "express";
 import TransactionDao from "@daos/Transaction/TransactionDao.mock";
@@ -36,22 +36,37 @@ async function RequestAsync(
   try {
     var r = await request(endpoint, query, variables);
     return r;
-  } catch (e) {
-    console.error(e);
-    return null;
+  } catch (error) {
+    if (!(error instanceof ClientError)) {
+      console.error("Error occurrend during RequestAsync: " + error);
+      return null;
+    } else {
+      throw error;
+    }
   }
 }
 
 async function GetAddresses() {
-  const sourceAddressQuery = await RequestAsync(
-    SOURCE_ENDPOINT,
-    MinerAddressQuery
-  );
+  try {
+    const sourceAddressQuery = await RequestAsync(
+      SOURCE_ENDPOINT,
+      MinerAddressQuery
+    );
+    sourceAddress = sourceAddressQuery?.minerAddress;
+  } catch (error) {
+    console.error("Error occurred during sourceAddressQuery " + error);
+    if (error instanceof ClientError) {
+      var ce = error as ClientError;
+      if (ce.response.data.minerAddress == null) {
+        console.log("Miner address of source client is null");
+        sourceAddress = null;
+      }
+    }
+  }
   const targetAddressQuery = await RequestAsync(
     TARGET_ENDPOINT,
     MinerAddressQuery
   );
-  sourceAddress = sourceAddressQuery?.minerAddress;
   targetAddress = targetAddressQuery?.minerAddress;
 }
 
@@ -151,7 +166,6 @@ setInterval(async () => {
         const elapsed = new Date().valueOf() - lastWarned.valueOf();
 
         if (elapsed > WARN_TIMEOUT) {
-          console.log("Sending warning message");
           logMessages +=
             'Transaction "' +
             id +
@@ -218,8 +232,8 @@ setInterval(async () => {
   }
 }, 1000);
 
-let sourceAddress: string | undefined = undefined;
-let targetAddress: string | undefined = undefined;
+let sourceAddress: string | undefined | null = undefined;
+let targetAddress: string | undefined | null = undefined;
 let stagedTransactions: Array<Transaction>;
 
 /**
