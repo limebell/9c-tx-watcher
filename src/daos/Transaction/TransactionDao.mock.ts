@@ -20,6 +20,14 @@ class TransactionDao extends MockDaoMock implements ITransactionDao {
 
   public async add(transactions: Transaction[]): Promise<void> {
     const db = await super.openDb();
+    if (
+      transactions === undefined ||
+      transactions === null ||
+      transactions.length === 0
+    ) {
+      return;
+    }
+
     transactions.forEach((transaction) => {
       db.transactions.push(transaction);
     });
@@ -29,6 +37,14 @@ class TransactionDao extends MockDaoMock implements ITransactionDao {
   // If the given transaction does not exists, add it to the database.
   public async update(transactions: Transaction[]): Promise<void> {
     const db = await super.openDb();
+    if (
+      transactions === undefined ||
+      transactions === null ||
+      transactions.length === 0
+    ) {
+      return;
+    }
+
     const copy = transactions.slice();
     for (let i = 0; i < db.transactions.length; i++) {
       let index = copy.findIndex((tx) => tx.txId === db.transactions[i].txId);
