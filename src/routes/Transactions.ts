@@ -176,14 +176,15 @@ setInterval(async () => {
         }
       }
 
-      transactionDao.update(transaction);
-
       return transaction;
     }
   );
 
+  transactionDao.update(stagedTransactions);
+
   const transactions = await transactionDao.getAll();
   if (transactions !== undefined) {
+    const transactionsToUpdate = new Array<Transaction>();
     const promises = transactions
       .filter(
         (value) =>
@@ -219,18 +220,19 @@ setInterval(async () => {
           } else {
             value.status = TransactionStatus.Included;
           }
-          transactionDao.update(value);
+          transactionsToUpdate.push(value);
         }
       });
 
     await Promise.all(promises);
+    transactionDao.update(transactionsToUpdate);
   }
 
   if (logMessages !== "") {
     logMessages.trimEnd();
     webHook?.send(logMessages);
   }
-}, 1000);
+}, 5000);
 
 let sourceAddress: string | undefined | null = undefined;
 let targetAddress: string | undefined | null = undefined;
