@@ -89,6 +89,25 @@ function getTypeId(action: string): string {
   return action.substring(startIndex, endIndex);
 }
 
+async function GetStoredTransaction(
+  id: string
+): Promise<Transaction | undefined | null> {
+  try {
+    const storedTransaction = await RequestAsync(
+      SOURCE_ENDPOINT,
+      StoredTransactionQuery,
+      { id: id }
+    );
+    return storedTransaction;
+  } catch (error) {
+    if (error instanceof ClientError) {
+      return null;
+    }
+
+    return undefined;
+  }
+}
+
 setInterval(async () => {
   if (sourceAddress === undefined || targetAddress === undefined) {
     await GetAddresses();
@@ -199,12 +218,9 @@ setInterval(async () => {
             (t: { txId: string }) => t.txId == value.txId
           ) === undefined
         ) {
-          const id = value.txId;
-          const storedTransaction = await RequestAsync(
-            SOURCE_ENDPOINT,
-            StoredTransactionQuery,
-            { id: id }
-          );
+          const id: string = value.txId;
+          const storedTransaction: Transaction | undefined | null =
+            await GetStoredTransaction(id);
 
           lastWarnedMap.delete(id);
 
@@ -216,7 +232,7 @@ setInterval(async () => {
               '" is discarded after ' +
               (new Date().valueOf() - new Date(value.createdAt).valueOf()) /
                 1000 +
-              " seconds.";
+              " seconds.\n";
           } else {
             value.status = TransactionStatus.Included;
           }
