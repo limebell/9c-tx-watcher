@@ -19,7 +19,7 @@ const SOURCE_ENDPOINT: string = process.env.SOURCE_ENDPOINT
 const TARGET_ENDPOINT: string = process.env.TARGET_ENDPOINT
   ? process.env.TARGET_ENDPOINT
   : "";
-const webHook = process.env.WEBHOOK
+const webHook: WebHook | undefined = process.env.WEBHOOK
   ? new WebHook(process.env.WEBHOOK)
   : undefined;
 // Warn every 60 seconds.
@@ -29,7 +29,6 @@ const WARN_TIMEOUT: number = process.env.WARN_TIMEOUT
 const POLL_INTERVAL: number = process.env.POLL_INTERVAL
   ? parseInt(process.env.POLL_INTERVAL)
   : 5000;
-const lastWarnedMap = new Map<string, Date>();
 
 async function RequestAsync(
   endpoint: string,
@@ -111,7 +110,7 @@ async function GetStoredTransaction(
   }
 }
 
-setInterval(async () => {
+async function update() {
   if (sourceAddress === undefined || targetAddress === undefined) {
     await GetAddresses();
   }
@@ -150,7 +149,7 @@ setInterval(async () => {
 
   function getTxOfId(txId: string): Transaction | null {
     for (let i: number = 0; i < storedTransactions.length; i++) {
-      if (storedTransactions[i].txId == txId) {
+      if (storedTransactions[i].txId === txId) {
         return storedTransactions[i];
       }
     }
@@ -176,26 +175,8 @@ setInterval(async () => {
 
       if (targetTxIds?.includes(transaction.txId)) {
         transaction.status = TransactionStatus.Staged;
-      } else if (transaction.status == TransactionStatus.Staged) {
+      } else if (transaction.status === TransactionStatus.Staged) {
         transaction.status = TransactionStatus.Pending2;
-      } else if (transaction.status == TransactionStatus.Pending1) {
-        // Warn via slack that the transaction with id is pending for long time.
-        const id = transaction.txId;
-        const createdAt = transaction.createdAt;
-        let lastWarned = lastWarnedMap.get(id);
-        lastWarned =
-          lastWarned === undefined ? new Date(createdAt) : lastWarned;
-        const elapsed = new Date().valueOf() - lastWarned.valueOf();
-
-        if (elapsed > WARN_TIMEOUT) {
-          logMessages +=
-            'Transaction "' +
-            id +
-            '" is pending for ' +
-            (new Date().valueOf() - new Date(createdAt).valueOf()) / 1000 +
-            " seconds.\n";
-          lastWarnedMap.set(id, new Date());
-        }
       }
 
       return transaction;
@@ -226,8 +207,6 @@ setInterval(async () => {
           const storedTransaction: Transaction | undefined | null =
             await GetStoredTransaction(id);
 
-          lastWarnedMap.delete(id);
-
           if (storedTransaction === undefined || storedTransaction === null) {
             value.status = TransactionStatus.Discarded;
             logMessages +=
@@ -239,6 +218,7 @@ setInterval(async () => {
               " seconds.\n";
             transactionsToUpdate.push(value);
           } else {
+            // Do not save included transactions for now
             value.status = TransactionStatus.Included;
             transactionsToDelete.push(value);
           }
@@ -254,7 +234,33 @@ setInterval(async () => {
     logMessages.trimEnd();
     webHook?.send(logMessages);
   }
-}, POLL_INTERVAL);
+}
+
+async function warn() {
+  const transactions = await transactionDao.getAll();
+  // Warn via slack that the transaction with id is pending for long time.
+  let count: number = 0;
+  transactions.forEach((tx) => {
+    const createdAt = tx.createdAt;
+    const elapsed = new Date().valueOf() - new Date(createdAt).valueOf();
+
+    if (elapsed > WARN_TIMEOUT) {
+      count++;
+    }
+  });
+
+  if (count > 0) {
+    webHook?.send(
+      count +
+        " transactions are still not staged after " +
+        WARN_TIMEOUT / 1000 +
+        " seconds."
+    );
+  }
+}
+
+setInterval(update, POLL_INTERVAL);
+setInterval(warn, WARN_TIMEOUT);
 
 let sourceAddress: string | undefined | null = undefined;
 let targetAddress: string | undefined | null = undefined;
