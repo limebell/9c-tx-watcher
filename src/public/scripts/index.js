@@ -65,7 +65,7 @@ function displayTransactions() {
       var allTransactionsAnchor = document.getElementById(
         "all-transactions-anchor"
       );
-      innerHTML = `<div class="header">All Transactions: ${allTransactions.length}</div>
+      innerHTML = `<div class="header">Discarded Transactions: ${allTransactions.length}</div>
         <table><thead><tr>
         <th>Transaction Id</th>
         <th>Nonce</th>

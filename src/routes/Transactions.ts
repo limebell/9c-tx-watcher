@@ -207,6 +207,7 @@ setInterval(async () => {
   const transactions = await transactionDao.getAll();
   if (transactions !== undefined) {
     const transactionsToUpdate = new Array<Transaction>();
+    const transactionsToDelete = new Array<Transaction>();
     const promises = transactions
       .filter(
         (value) =>
@@ -236,15 +237,17 @@ setInterval(async () => {
               (new Date().valueOf() - new Date(value.createdAt).valueOf()) /
                 1000 +
               " seconds.\n";
+            transactionsToUpdate.push(value);
           } else {
             value.status = TransactionStatus.Included;
+            transactionsToDelete.push(value);
           }
-          transactionsToUpdate.push(value);
         }
       });
 
     await Promise.all(promises);
     transactionDao.update(transactionsToUpdate);
+    transactionDao.delete(transactionsToDelete.map((tx) => tx.txId));
   }
 
   if (logMessages !== "") {
@@ -303,8 +306,11 @@ export async function getTransactions(req: Request, res: Response) {
   var transactions = await transactionDao.getAll();
   transactions =
     transactions === undefined ? new Array<Transaction>() : transactions;
+  // Display discarded transactions only
   return res.status(OK).json({
     stagedTransactions: stagedTransactions,
-    transactions: transactions,
+    transactions: transactions.filter(
+      (tx) => tx.status === TransactionStatus.Discarded
+    ),
   });
 }

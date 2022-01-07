@@ -60,16 +60,25 @@ class TransactionDao extends MockDaoMock implements ITransactionDao {
     await super.saveDb(db);
   }
 
-  public async delete(txId: string): Promise<void> {
+  public async delete(txIds: string[]): Promise<void> {
     const db = await super.openDb();
+    if (txIds === undefined || txIds === null || txIds.length === 0) {
+      return;
+    }
+
+    const copy = txIds.slice();
     for (let i = 0; i < db.transactions.length; i++) {
-      if (db.transactions[i].txId === txId) {
+      let index = copy.findIndex((txId) => txId === db.transactions[i].txId);
+      if (index !== -1) {
         db.transactions.splice(i, 1);
-        await super.saveDb(db);
-        return;
+        copy.splice(index, 1);
+        i--;
+        if (copy.length === 0) {
+          break;
+        }
       }
     }
-    throw new Error("Transaction not found");
+    await super.saveDb(db);
   }
 }
 
