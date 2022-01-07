@@ -124,7 +124,7 @@ setInterval(async () => {
       involvedAddress: null,
       desc: false,
       offset: 0,
-      limit: 100,
+      limit: 1000,
     }
   );
   const targetStagedTransactions = await RequestAsync(
@@ -135,7 +135,7 @@ setInterval(async () => {
       involvedAddress: null,
       desc: false,
       offset: 0,
-      limit: 100,
+      limit: 1000,
     }
   );
 
