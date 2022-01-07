@@ -26,6 +26,9 @@ const webHook = process.env.WEBHOOK
 const WARN_TIMEOUT: number = process.env.WARN_TIMEOUT
   ? parseInt(process.env.WARN_TIMEOUT)
   : 60 * 1000;
+const POLL_INTERVAL: number = process.env.POLL_INTERVAL
+  ? parseInt(process.env.POLL_INTERVAL)
+  : 5000;
 const lastWarnedMap = new Map<string, Date>();
 
 async function RequestAsync(
@@ -248,7 +251,7 @@ setInterval(async () => {
     logMessages.trimEnd();
     webHook?.send(logMessages);
   }
-}, 5000);
+}, POLL_INTERVAL);
 
 let sourceAddress: string | undefined | null = undefined;
 let targetAddress: string | undefined | null = undefined;
