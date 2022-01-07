@@ -50,13 +50,13 @@ class TransactionDao extends MockDaoMock implements ITransactionDao {
       let index = copy.findIndex((tx) => tx.txId === db.transactions[i].txId);
       if (index !== -1) {
         db.transactions[i] = copy[index];
-        copy.splice(i, 1);
-
+        copy.splice(index, 1);
         if (copy.length === 0) {
           break;
         }
       }
     }
+    copy.forEach((tx: Transaction) => db.transactions.push(tx));
     await super.saveDb(db);
   }
 
