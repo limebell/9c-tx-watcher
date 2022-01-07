@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import helmet from "helmet";
+import cors from "cors";
 
 import express, { NextFunction, Request, Response } from "express";
 import StatusCodes from "http-status-codes";
@@ -20,6 +21,8 @@ const { BAD_REQUEST } = StatusCodes;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+app.use(cors());
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === "development") {
