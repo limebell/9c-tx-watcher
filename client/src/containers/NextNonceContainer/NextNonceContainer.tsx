@@ -28,7 +28,7 @@ function NextNonceContainer(): JSX.Element {
     let mounted = true;
     const source = axios.CancelToken.source();
     if (mounted) {
-      const interval = setInterval(fetchNextNonce, 1000);
+      setInterval(fetchNextNonce, 1000);
     }
 
     return () => {
