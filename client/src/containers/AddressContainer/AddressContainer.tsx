@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import AddressesView from "../../components/organisms/AddressesView/AddressesView";
 import apiRequest from "../../utils/api-request";
+import axios from "axios";
 import { Address } from "../../types";
 
 function AddressContainer(): JSX.Element {
@@ -26,12 +27,14 @@ function AddressContainer(): JSX.Element {
     }
   }, []);
   useEffect(() => {
+    const source = axios.CancelToken.source();
     let mounted = true;
     if (mounted) {
-      const interval = setInterval(fetchAddresses, 1000);
+      setInterval(fetchAddresses, 1000);
     }
     return () => {
       mounted = false;
+      source.cancel();
     };
   }, [fetchAddresses]);
   return <AddressesView addresses={addresses} fetchSuccess={fetchSuccess} />;
