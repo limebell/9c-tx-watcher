@@ -24,7 +24,7 @@ function StagedTransactionsRequestContainer(): JSX.Element {
     const source = axios.CancelToken.source();
     let mounted = true;
     if (mounted) {
-      const interval = setInterval(fetchStagedTransactionData, 1000);
+      setInterval(fetchStagedTransactionData, 1000);
     }
 
     return () => {

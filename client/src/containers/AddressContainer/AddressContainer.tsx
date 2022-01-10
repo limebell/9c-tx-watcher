@@ -30,7 +30,7 @@ function AddressContainer(): JSX.Element {
     const source = axios.CancelToken.source();
     let mounted = true;
     if (mounted) {
-      const interval = setInterval(fetchAddresses, 1000);
+      setInterval(fetchAddresses, 1000);
     }
     return () => {
       mounted = false;
