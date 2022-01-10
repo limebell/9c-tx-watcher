@@ -12,7 +12,12 @@ function StagedTransactionsView(
   const { stagedTransactions, fetchSuccess } = props;
   return (
     <div className="staged-transactions-view">
-      <h2>Staged Transactions: {stagedTransactions.length || 0}</h2>
+      <h2>
+        Staged Transactions:{" "}
+        {fetchSuccess && typeof stagedTransactions?.length === "number"
+          ? stagedTransactions?.length
+          : 0}
+      </h2>
       <table>
         <thead>
           <tr className="table-header">
@@ -25,7 +30,7 @@ function StagedTransactionsView(
         </thead>
         <tbody>
           {fetchSuccess &&
-            stagedTransactions.map((transaction: Transaction) => {
+            stagedTransactions?.map((transaction: Transaction) => {
               return (
                 <tr key={transaction.txId}>
                   <td className="tx-id">{transaction.txId}</td>

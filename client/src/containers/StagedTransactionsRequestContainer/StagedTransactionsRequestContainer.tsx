@@ -17,7 +17,7 @@ function StagedTransactionsRequestContainer(): JSX.Element {
       setFetchSuccess(true);
       return response.data;
     } catch (error) {
-      console.error(error);
+      return;
     }
   }, []);
   useEffect(() => {
