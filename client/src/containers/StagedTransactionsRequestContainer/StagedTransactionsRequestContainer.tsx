@@ -13,9 +13,7 @@ function StagedTransactionsRequestContainer(): JSX.Element {
   const fetchStagedTransactionData = useCallback(async () => {
     try {
       const response = await apiRequest.getTransactions();
-      setStagedTransactions(() => {
-        return [...response.data.stagedTransactions];
-      });
+      setStagedTransactions(response.data.stagedTransactions);
       setFetchSuccess(true);
       return response.data;
     } catch (error) {
