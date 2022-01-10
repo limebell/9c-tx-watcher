@@ -1,5 +1,9 @@
 import React from "react";
 import { StagedTransactions, Transaction } from "../../../types";
+import style from "./StagedTransactionsView.module.scss";
+import classnames from "classnames";
+
+const cx = classnames.bind(style);
 
 interface StagedTransactionsReuquestProps {
   stagedTransactions: StagedTransactions | any;
@@ -11,7 +15,7 @@ function StagedTransactionsView(
 ): JSX.Element {
   const { stagedTransactions, fetchSuccess } = props;
   return (
-    <div className="staged-transactions-view">
+    <div className={cx("staged-transactions-view")}>
       <h2>
         Staged Transactions:{" "}
         {fetchSuccess && typeof stagedTransactions?.length === "number"
