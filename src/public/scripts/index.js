@@ -48,7 +48,8 @@ function displayTransactions() {
       var stagedTransactionsAnchor = document.getElementById(
         "staged-transactions-anchor"
       );
-      var innerHTML = `<table><thead><tr class="table-header">
+      var innerHTML = `<div class="header">Staged Transactions: ${stagedTransactions.length}</div>
+        <table><thead><tr class="table-header">
         <th>Transaction Id</th>
         <th>Nonce</th>
         <th>Actions</th>
@@ -64,7 +65,8 @@ function displayTransactions() {
       var allTransactionsAnchor = document.getElementById(
         "all-transactions-anchor"
       );
-      innerHTML = `<table><thead><tr>
+      innerHTML = `<div class="header">Discarded Transactions: ${allTransactions.length}</div>
+        <table><thead><tr>
         <th>Transaction Id</th>
         <th>Nonce</th>
         <th>Actions</th>

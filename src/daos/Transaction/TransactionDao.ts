@@ -5,7 +5,7 @@ export interface ITransactionDao {
   getAll: () => Promise<Transaction[]>;
   add: (transactions: Transaction[]) => Promise<void>;
   update: (transactions: Transaction[]) => Promise<void>;
-  delete: (txId: string) => Promise<void>;
+  delete: (txIds: string[]) => Promise<void>;
 }
 
 class TransactionDao implements ITransactionDao {
@@ -47,7 +47,7 @@ class TransactionDao implements ITransactionDao {
    *
    * @param txId
    */
-  public async delete(txId: string): Promise<void> {
+  public async delete(txIds: string[]): Promise<void> {
     // TODO
     return Promise.resolve(undefined);
   }
