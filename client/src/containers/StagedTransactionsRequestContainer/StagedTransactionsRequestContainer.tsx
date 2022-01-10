@@ -5,7 +5,7 @@ function StagedTransactionsRequestContainer(): JSX.Element {
   const [stagedTransactions, setStagedTransactions] = useState<Array<object>>(
     []
   );
-  const getFetchTransactionData = useCallback(async () => {
+  const fetchStagedTransactionData = useCallback(async () => {
     try {
       const response = await apiRequest.getTransactions();
       setStagedTransactions(() => {
@@ -20,17 +20,17 @@ function StagedTransactionsRequestContainer(): JSX.Element {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-      const interval = setInterval(getFetchTransactionData, 1000);
+      const interval = setInterval(fetchStagedTransactionData, 1000);
     }
     return () => {
       mounted = false;
     };
-  }, [getFetchTransactionData]);
+  }, [fetchStagedTransactionData]);
   return (
     // Temporary DOM
     // TODO: create organism component and connect to container
     <div>
-      <h1>Api Request container</h1>
+      <h1>StagedTransactionsContainer</h1>
     </div>
   );
 }
