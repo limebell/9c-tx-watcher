@@ -6,9 +6,9 @@ import PageTemplate from "../../templates/PageTemplate";
 function HomePage(): JSX.Element {
   return (
     <PageTemplate>
-      <StagedTransactionsRequestContainer />
       <NextNonceContainer />
       <AddressContainer />
+      <StagedTransactionsRequestContainer />
     </PageTemplate>
   );
 }
