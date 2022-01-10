@@ -2,10 +2,16 @@ import React, { useEffect, useState, useCallback } from "react";
 import apiRequest from "../../utils/api-request";
 
 function NextNonceContainer(): JSX.Element {
+  const [nextNonce, setNextNonce] = useState<object>({});
   const fetchNextNonce = useCallback(async () => {
     try {
       const response = await apiRequest.getNextNonce();
-      console.log(response);
+      setNextNonce((prev) => {
+        return {
+          ...prev,
+          nextNonce: response.data.nextNonce,
+        };
+      });
     } catch (error) {
       console.error(error);
     }
