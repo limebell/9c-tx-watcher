@@ -293,6 +293,11 @@ export async function getNextNonce(req: Request, res: Response) {
   if (sourceAddress === undefined) {
     await GetAddresses();
   }
+
+  if (sourceAddress === null) {
+    return res.status(OK).json({ nextTxNonce: -1 });
+  }
+
   const nextTxNonce = await RequestAsync(SOURCE_ENDPOINT, NextTxNonceQuery, {
     address: sourceAddress,
   });
