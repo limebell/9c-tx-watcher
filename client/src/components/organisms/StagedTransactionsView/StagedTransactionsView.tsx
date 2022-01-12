@@ -13,18 +13,16 @@ import {
 const cx = classnames.bind(style);
 interface StagedTransactionsReuquestProps {
   stagedTransactions: StagedTransactions | any;
-  fetchSuccess: boolean;
 }
 
-function StagedTransactionsView(
-  props: StagedTransactionsReuquestProps
-): JSX.Element {
-  const { stagedTransactions, fetchSuccess } = props;
+function StagedTransactionsView({
+  stagedTransactions,
+}: StagedTransactionsReuquestProps): JSX.Element {
   return (
     <div className={cx("staged-transactions-view")}>
       <h2>
         Staged Transactions:{" "}
-        {fetchSuccess && typeof stagedTransactions?.length === "number"
+        {typeof stagedTransactions?.length === "number"
           ? stagedTransactions?.length
           : 0}
       </h2>
@@ -39,35 +37,34 @@ function StagedTransactionsView(
           </tr>
         </thead>
         <tbody>
-          {fetchSuccess &&
-            stagedTransactions?.map((transaction: Transaction) => {
-              return (
-                <tr key={transaction.txId}>
-                  <Td className="tx-id">{transaction.txId}</Td>
-                  <Td className="nonce">{transaction.nonce}</Td>
-                  <Td className="actions">{transaction.actions[0]}</Td>
-                  <Td className="createdAt">
-                    {new Date(transaction.createdAt).toUTCString()}
-                  </Td>
-                  <Td
-                    className={`status ${getStatusColor(
-                      Number(transaction.status)
-                    )}`}
-                    // FIXME: scss module is not loaded to browser
-                    style={{
-                      color: getStatusColor(Number(transaction.status)),
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {`${getStatusAlias(Number(transaction.status))} ${
-                      Number(transaction.status) === 0
-                        ? getElapsedTime(transaction.createdAt)
-                        : ""
-                    }`}
-                  </Td>
-                </tr>
-              );
-            })}
+          {stagedTransactions?.map((transaction: Transaction) => {
+            return (
+              <tr key={transaction.txId}>
+                <Td className="tx-id">{transaction.txId}</Td>
+                <Td className="nonce">{transaction.nonce}</Td>
+                <Td className="actions">{transaction.actions[0]}</Td>
+                <Td className="createdAt">
+                  {new Date(transaction.createdAt).toUTCString()}
+                </Td>
+                <Td
+                  className={`status ${getStatusColor(
+                    Number(transaction.status)
+                  )}`}
+                  // FIXME: scss module is not loaded to browser
+                  style={{
+                    color: getStatusColor(Number(transaction.status)),
+                    fontWeight: "bold",
+                  }}
+                >
+                  {`${getStatusAlias(Number(transaction.status))} ${
+                    Number(transaction.status) === 0
+                      ? getElapsedTime(transaction.createdAt)
+                      : ""
+                  }`}
+                </Td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>

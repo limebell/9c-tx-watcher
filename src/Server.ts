@@ -21,7 +21,6 @@ const { BAD_REQUEST } = StatusCodes;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cors());
 
 // Show routes called in console during development
