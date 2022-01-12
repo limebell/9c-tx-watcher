@@ -16,5 +16,5 @@ export interface Transaction {
   txId: string | undefined;
   nonce: number | undefined;
   createdAt: string | number | Date;
-  status: number | undefined;
+  status: number;
 }
