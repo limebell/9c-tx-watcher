@@ -16,7 +16,7 @@ function NextNonceContainer(): JSX.Element {
       setNextNonce((prev) => {
         return {
           ...prev,
-          nextNonce: response.data.nextNonce || undefined,
+          nextNonce: response?.data?.nextNonce || undefined,
         };
       });
       setFectchSuccess(true);

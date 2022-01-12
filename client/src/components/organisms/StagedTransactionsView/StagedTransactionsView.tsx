@@ -2,6 +2,13 @@ import React from "react";
 import { StagedTransactions, Transaction } from "../../../types";
 import style from "./StagedTransactionsView.module.scss";
 import classnames from "classnames";
+import Table from "../../atoms/Table";
+import Td from "../../atoms/Td";
+import {
+  getElapsedTime,
+  getStatusAlias,
+  getStatusColor,
+} from "../../../utils/functions";
 
 const cx = classnames.bind(style);
 interface StagedTransactionsReuquestProps {
@@ -21,7 +28,7 @@ function StagedTransactionsView(
           ? stagedTransactions?.length
           : 0}
       </h2>
-      <table>
+      <Table>
         <thead>
           <tr className="table-header">
             <th>Transaction Id</th>
@@ -36,20 +43,33 @@ function StagedTransactionsView(
             stagedTransactions?.map((transaction: Transaction) => {
               return (
                 <tr key={transaction.txId}>
-                  <td className="tx-id">{transaction.txId}</td>
-                  <td className="transaction-nonce">{transaction.nonce}</td>
-                  <td className="transaction-actions">
-                    {transaction.actions[0]}
-                  </td>
-                  <td className="transaction-createdAt">
+                  <Td className="tx-id">{transaction.txId}</Td>
+                  <Td className="nonce">{transaction.nonce}</Td>
+                  <Td className="actions">{transaction.actions[0]}</Td>
+                  <Td className="createdAt">
                     {new Date(transaction.createdAt).toUTCString()}
-                  </td>
-                  <td className="transaction-status">{transaction.status}</td>
+                  </Td>
+                  <Td
+                    className={`status ${getStatusColor(
+                      Number(transaction.status)
+                    )}`}
+                    // FIXME: scss module is not loaded to browser
+                    style={{
+                      color: getStatusColor(Number(transaction.status)),
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {`${getStatusAlias(Number(transaction.status))} ${
+                      Number(transaction.status) === 0
+                        ? getElapsedTime(transaction.createdAt)
+                        : ""
+                    }`}
+                  </Td>
                 </tr>
               );
             })}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }

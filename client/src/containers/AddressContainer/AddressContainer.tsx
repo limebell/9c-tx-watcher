@@ -16,8 +16,8 @@ function AddressContainer(): JSX.Element {
       setAddresses((prev) => {
         return {
           ...prev,
-          sourceAddress: response.data.sourceAddress,
-          targetAddress: response.data.targetAddress,
+          sourceAddress: response?.data?.sourceAddress,
+          targetAddress: response?.data?.targetAddress,
         };
       });
       setFetchSuccess(true);
