@@ -10,7 +10,7 @@ function AddressesView(props: AddressesViewProps): JSX.Element {
   const { fetchSuccess, addresses } = props;
   return (
     <div className="address-view">
-      Address View
+      <h3>Address View</h3>
       <div>
         source address:{" "}
         {fetchSuccess

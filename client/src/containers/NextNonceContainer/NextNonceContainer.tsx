@@ -6,7 +6,7 @@ import axios from "axios";
 
 function NextNonceContainer(): JSX.Element {
   const [nextNonce, setNextNonce] = useState<Nonce>({
-    nextNonce: "",
+    nextTxNonce: -1,
   });
   const [fetchSuccess, setFectchSuccess] = useState<boolean>(false);
 
@@ -16,7 +16,7 @@ function NextNonceContainer(): JSX.Element {
       setNextNonce((prev) => {
         return {
           ...prev,
-          nextNonce: response?.data?.nextNonce || undefined,
+          nextTxNonce: response?.data?.nextTxNonce,
         };
       });
       setFectchSuccess(true);

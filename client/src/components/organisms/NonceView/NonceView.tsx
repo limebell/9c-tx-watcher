@@ -6,19 +6,11 @@ interface NonceViewProps {
   fetchSuccess: boolean;
 }
 
-function NonceView(props: NonceViewProps): JSX.Element {
-  const { nextNonce, fetchSuccess } = props;
+function NonceView({ nextNonce, fetchSuccess }: NonceViewProps): JSX.Element {
   return (
     <div className="nonce-view">
-      NextNonceView
-      <div>
-        nextNonce:{" "}
-        {fetchSuccess
-          ? !nextNonce.nextNonce
-            ? "null"
-            : nextNonce.nextNonce
-          : "null"}
-      </div>
+      <h3>NextNonceView</h3>
+      <div>nextTxNonce: {nextNonce?.nextTxNonce}</div>
     </div>
   );
 }

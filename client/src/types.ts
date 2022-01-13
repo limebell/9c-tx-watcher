@@ -3,7 +3,7 @@ export interface Address {
   targetAddress: string | undefined;
 }
 export interface Nonce {
-  nextNonce: string | undefined;
+  nextTxNonce: number;
 }
 
 export interface StagedTransactions {
