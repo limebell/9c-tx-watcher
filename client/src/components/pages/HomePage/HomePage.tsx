@@ -7,7 +7,9 @@ import AddressesView from "../../organisms/AddressesView";
 function HomePage(): JSX.Element {
   return (
     <PageTemplate>
-      <StagedTransactionsRequestContainer />
+      <NonceView />
+      <AddressesView />
+      <StagedTransactionsView />
     </PageTemplate>
   );
 }
