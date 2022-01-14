@@ -5,6 +5,9 @@
 /tmp
 /out-tsc
 
+# client production
+/client/build
+
 # Runtime data
 pids
 *.pid
