@@ -37,7 +37,7 @@ function AddressContainer(): JSX.Element {
       source.cancel();
     };
   }, [fetchAddresses]);
-  return <AddressesView addresses={addresses} fetchSuccess={fetchSuccess} />;
+  return <AddressesView />;
 }
 
 export default AddressContainer;

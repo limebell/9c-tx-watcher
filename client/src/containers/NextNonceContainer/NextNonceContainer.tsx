@@ -36,7 +36,7 @@ function NextNonceContainer(): JSX.Element {
       source.cancel();
     };
   }, [fetchNextNonce]);
-  return <NonceView nextNonce={nextNonce} fetchSuccess={fetchSuccess} />;
+  return <NonceView />;
 }
 
 export default NextNonceContainer;

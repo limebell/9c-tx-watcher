@@ -1,15 +1,14 @@
 import React from "react";
-import { Nonce } from "../../../types";
+import useNextNonceAsync, {
+  UseNextNonceAsync,
+} from "../../../hooks/useNextNonceAsync";
 
-interface NonceViewProps {
-  nextNonce: Nonce;
-  fetchSuccess: boolean;
-}
-
-function NonceView({ nextNonce, fetchSuccess }: NonceViewProps): JSX.Element {
+function NonceView(): JSX.Element {
+  const { nextNonce, error }: UseNextNonceAsync = useNextNonceAsync();
   return (
     <div className="nonce-view">
       <h3>NextNonceView</h3>
+      {error && <p>서버에 문제가 있습니다.</p>}
       <div>nextTxNonce: {nextNonce?.nextTxNonce}</div>
     </div>
   );

@@ -13,7 +13,7 @@ function StagedTransactionsRequestContainer(): JSX.Element {
       return response.data.stagedTransactions;
     });
   const { data, error }: SWRResponse = useSWR(STAGED_TRANSACTIONS_URL, fetcher);
-  return <StagedTransactionsView stagedTransactions={data} />;
+  return <StagedTransactionsView />;
 }
 
 export default StagedTransactionsRequestContainer;

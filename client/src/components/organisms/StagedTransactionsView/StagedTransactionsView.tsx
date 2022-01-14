@@ -1,5 +1,8 @@
 import React from "react";
-import { StagedTransactions, Transaction } from "../../../types";
+import { Transaction } from "../../../types";
+import useStagedTransactionsAsync, {
+  UseStagedTransactionsAsync,
+} from "../../../hooks/useStagedTransactionsAsync";
 import style from "./StagedTransactionsView.module.scss";
 import classnames from "classnames";
 import Table from "../../atoms/Table";
@@ -11,13 +14,10 @@ import {
 } from "../../../utils/functions";
 
 const cx = classnames.bind(style);
-interface StagedTransactionsReuquestProps {
-  stagedTransactions: StagedTransactions | any;
-}
 
-function StagedTransactionsView({
-  stagedTransactions,
-}: StagedTransactionsReuquestProps): JSX.Element {
+function StagedTransactionsView(): JSX.Element {
+  const { stagedTransactions, error }: UseStagedTransactionsAsync =
+    useStagedTransactionsAsync();
   return (
     <div className={cx("staged-transactions-view")}>
       <h2>
@@ -26,6 +26,7 @@ function StagedTransactionsView({
           ? stagedTransactions?.length
           : 0}
       </h2>
+      {error && <p>서버에 문제가 있습니다.</p>}
       <Table>
         <thead>
           <tr className="table-header">
