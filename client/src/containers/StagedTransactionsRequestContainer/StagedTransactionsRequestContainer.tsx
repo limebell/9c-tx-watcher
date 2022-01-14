@@ -8,7 +8,10 @@ import { STAGED_TRANSACTIONS_URL } from "../../utils/config";
 
 function StagedTransactionsRequestContainer(): JSX.Element {
   const fetcher = (url: string) =>
-    api.get(url).then((response) => response.data.stagedTransactions);
+    api.get(url).then((response) => {
+      console.log(response.data);
+      return response.data.stagedTransactions;
+    });
   const { data, error }: SWRResponse = useSWR(STAGED_TRANSACTIONS_URL, fetcher);
   return <StagedTransactionsView stagedTransactions={data} />;
 }
