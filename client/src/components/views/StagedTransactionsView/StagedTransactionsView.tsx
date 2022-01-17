@@ -49,7 +49,7 @@ function StagedTransactionsView(): JSX.Element {
       <h2>
         Staged Transactions:{" "}
         {typeof stagedTransactions?.length === "number"
-          ? getStatusStatistics(stagedTransactions)
+          ? stagedTransactions?.length
           : 0}
       </h2>
       {error
