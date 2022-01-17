@@ -1,21 +1,38 @@
-import useSWR, { SWRResponse } from "swr";
+import { useQuery, UseQueryResult } from "react-query";
 import { NEXT_NONCE_URL } from "../utils/config";
 import api from "../utils/instance";
 import { Nonce } from "../types";
 
 // use type more than interface to define types specific
 type NonceResponse = {
+  status: string;
+  isLoading: boolean;
+  isSuccess: boolean;
   nextNonce: Nonce | undefined;
+  dataUpdatedAt: number | Date;
   error: any;
 };
 
 function useNextNonceAsync(): NonceResponse {
   const fetcher = (): Promise<Nonce> =>
     api.get(NEXT_NONCE_URL).then((response) => response.data);
-  const { data, error }: SWRResponse = useSWR<Nonce>(NEXT_NONCE_URL, fetcher);
+  const {
+    status,
+    isLoading,
+    isSuccess,
+    data,
+    dataUpdatedAt,
+    error,
+  }: UseQueryResult<Nonce> = useQuery<Nonce>(NEXT_NONCE_URL, fetcher, {
+    refetchInterval: 1000,
+  });
   return {
+    status,
+    isLoading,
+    isSuccess,
     nextNonce: data,
-    error: error,
+    dataUpdatedAt,
+    error,
   };
 }
 
