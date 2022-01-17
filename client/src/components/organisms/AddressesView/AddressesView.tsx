@@ -1,32 +1,16 @@
 import React from "react";
-import { Address } from "../../../types";
+import useAddressAsync, {
+  UseAddressAsync,
+} from "../../../hooks/useAddressAsync";
 
-interface AddressesViewProps {
-  addresses: Address;
-  fetchSuccess?: boolean;
-}
-
-function AddressesView(props: AddressesViewProps): JSX.Element {
-  const { fetchSuccess, addresses } = props;
+function AddressesView(): JSX.Element {
+  const { addresses, error }: UseAddressAsync = useAddressAsync();
   return (
     <div className="address-view">
       <h3>Address View</h3>
-      <div>
-        source address:{" "}
-        {fetchSuccess
-          ? !addresses.sourceAddress
-            ? "null"
-            : addresses.sourceAddress
-          : "null"}
-      </div>
-      <div>
-        target address:{" "}
-        {fetchSuccess
-          ? !addresses.targetAddress
-            ? "null"
-            : addresses.targetAddress
-          : "null"}
-      </div>
+      {error && <p>서버에 문제가 있습니다.</p>}
+      <div>source address: {addresses?.sourceAddress || "null"}</div>
+      <div>target address: {addresses?.targetAddress || "null"}</div>
     </div>
   );
 }

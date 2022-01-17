@@ -1,14 +1,15 @@
 import React from "react";
-import AddressContainer from "../../../containers/AddressContainer/AddressContainer";
-import NextNonceContainer from "../../../containers/NextNonceContainer";
-import StagedTransactionsRequestContainer from "../../../containers/StagedTransactionsRequestContainer";
+import NonceView from "../../organisms/NonceView";
 import PageTemplate from "../../templates/PageTemplate";
+import StagedTransactionsView from "../../organisms/StagedTransactionsView";
+import AddressesView from "../../organisms/AddressesView";
+
 function HomePage(): JSX.Element {
   return (
     <PageTemplate>
-      <NextNonceContainer />
-      <AddressContainer />
-      <StagedTransactionsRequestContainer />
+      <NonceView />
+      <AddressesView />
+      <StagedTransactionsView />
     </PageTemplate>
   );
 }

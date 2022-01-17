@@ -1,5 +1,8 @@
 import React from "react";
-import { StagedTransactions, Transaction } from "../../../types";
+import { Transaction } from "../../../types";
+import useStagedTransactionsAsync, {
+  UseStagedTransactionsAsync,
+} from "../../../hooks/useStagedTransactionsAsync";
 import style from "./StagedTransactionsView.module.scss";
 import classnames from "classnames";
 import Table from "../../atoms/Table";
@@ -11,23 +14,19 @@ import {
 } from "../../../utils/functions";
 
 const cx = classnames.bind(style);
-interface StagedTransactionsReuquestProps {
-  stagedTransactions: StagedTransactions | any;
-  fetchSuccess: boolean;
-}
 
-function StagedTransactionsView(
-  props: StagedTransactionsReuquestProps
-): JSX.Element {
-  const { stagedTransactions, fetchSuccess } = props;
+function StagedTransactionsView(): JSX.Element {
+  const { stagedTransactions, error }: UseStagedTransactionsAsync =
+    useStagedTransactionsAsync();
   return (
     <div className={cx("staged-transactions-view")}>
       <h2>
         Staged Transactions:{" "}
-        {fetchSuccess && typeof stagedTransactions?.length === "number"
+        {typeof stagedTransactions?.length === "number"
           ? stagedTransactions?.length
           : 0}
       </h2>
+      {error && <p>서버에 문제가 있습니다.</p>}
       <Table>
         <thead>
           <tr className="table-header">
@@ -39,35 +38,34 @@ function StagedTransactionsView(
           </tr>
         </thead>
         <tbody>
-          {fetchSuccess &&
-            stagedTransactions?.map((transaction: Transaction) => {
-              return (
-                <tr key={transaction.txId}>
-                  <Td className="tx-id">{transaction.txId}</Td>
-                  <Td className="nonce">{transaction.nonce}</Td>
-                  <Td className="actions">{transaction.actions[0]}</Td>
-                  <Td className="createdAt">
-                    {new Date(transaction.createdAt).toUTCString()}
-                  </Td>
-                  <Td
-                    className={`status ${getStatusColor(
-                      Number(transaction.status)
-                    )}`}
-                    // FIXME: scss module is not loaded to browser
-                    style={{
-                      color: getStatusColor(Number(transaction.status)),
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {`${getStatusAlias(Number(transaction.status))} ${
-                      Number(transaction.status) === 0
-                        ? getElapsedTime(transaction.createdAt)
-                        : ""
-                    }`}
-                  </Td>
-                </tr>
-              );
-            })}
+          {stagedTransactions?.map((transaction: Transaction) => {
+            return (
+              <tr key={transaction.txId}>
+                <Td className="tx-id">{transaction.txId}</Td>
+                <Td className="nonce">{transaction.nonce}</Td>
+                <Td className="actions">{transaction.actions[0]}</Td>
+                <Td className="createdAt">
+                  {new Date(transaction.createdAt).toUTCString()}
+                </Td>
+                <Td
+                  className={`status ${getStatusColor(
+                    Number(transaction.status)
+                  )}`}
+                  // FIXME: scss module is not loaded to browser
+                  style={{
+                    color: getStatusColor(Number(transaction.status)),
+                    fontWeight: "bold",
+                  }}
+                >
+                  {`${getStatusAlias(Number(transaction.status))} ${
+                    Number(transaction.status) === 0
+                      ? getElapsedTime(transaction.createdAt)
+                      : ""
+                  }`}
+                </Td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>
