@@ -40,7 +40,9 @@ async function RequestAsync(
     return r;
   } catch (error) {
     if (!(error instanceof ClientError)) {
-      console.error("Error occurrend during RequestAsync: " + error);
+      console.error(
+        "Error occurrend during quering " + query + "; Error: " + error
+      );
       return null;
     } else {
       throw error;
@@ -56,20 +58,37 @@ async function GetAddresses() {
     );
     sourceAddress = sourceAddressQuery?.minerAddress;
   } catch (error) {
-    console.error("Error occurred during sourceAddressQuery " + error);
     if (error instanceof ClientError) {
       var ce = error as ClientError;
       if (ce.response.data.minerAddress == null) {
         console.log("Miner address of source client is null");
         sourceAddress = null;
       }
+    } else {
+      console.error(
+        "Unexpected error occurred during sourceAddressQuery; " + error
+      );
     }
   }
-  const targetAddressQuery = await RequestAsync(
-    TARGET_ENDPOINT,
-    MinerAddressQuery
-  );
-  targetAddress = targetAddressQuery?.minerAddress;
+  try {
+    const targetAddressQuery = await RequestAsync(
+      TARGET_ENDPOINT,
+      MinerAddressQuery
+    );
+    targetAddress = targetAddressQuery?.minerAddress;
+  } catch (error) {
+    if (error instanceof ClientError) {
+      var ce = error as ClientError;
+      if (ce.response.data.minerAddress == null) {
+        console.log("Miner address of target client is null");
+        targetAddress = null;
+      }
+    } else {
+      console.error(
+        "Unexpected error occurred during targetAddressQuery; " + error
+      );
+    }
+  }
 }
 
 function getTypeId(action: string): string {
