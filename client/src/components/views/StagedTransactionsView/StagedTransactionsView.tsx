@@ -12,12 +12,15 @@ import {
   getStatusAlias,
   getStatusColor,
 } from "../../../utils/functions";
+import useTestAsync from "../../../hooks/useTestAsync";
 
 const cx = classnames.bind(style);
 
 function StagedTransactionsView(): JSX.Element {
   const { stagedTransactions, error }: UseStagedTransactionsAsync =
     useStagedTransactionsAsync();
+  const query = useTestAsync();
+  console.log(query);
   return (
     <div className={cx("staged-transactions-view")}>
       <h2>
