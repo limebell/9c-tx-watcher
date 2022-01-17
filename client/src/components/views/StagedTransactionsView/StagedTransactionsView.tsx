@@ -60,11 +60,17 @@ function StagedTransactionsView(): JSX.Element {
                     fontWeight: "bold",
                   }}
                 >
-                  {`${getStatusAlias(Number(transaction.status))} ${
-                    Number(transaction.status) === 0
-                      ? getElapsedTime(transaction.createdAt)
-                      : ""
-                  }`}
+                  {getStatusAlias(Number(transaction.status))}
+                  <br/>
+                  <span style={{
+                    color: "black",
+                    fontWeight: "lighter",
+                    fontSize: "smaller"
+                  }}>
+                    {Number(transaction.status) === 0
+                      ? "\n(for " + getElapsedTime(transaction.createdAt) + " seconds)"
+                      : ""}
+                  </span>
                 </Td>
               </tr>
             );
