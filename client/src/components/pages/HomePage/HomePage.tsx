@@ -7,6 +7,7 @@ import AddressesView from "../../views/AddressesView";
 function HomePage(): JSX.Element {
   return (
     <PageTemplate>
+      <h1>9c Transaction Monitor</h1>
       <NonceView />
       <AddressesView />
       <StagedTransactionsView />
