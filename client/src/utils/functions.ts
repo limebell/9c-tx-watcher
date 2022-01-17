@@ -9,8 +9,6 @@ export function getStatusColor(status: number): string {
 }
 
 export function getElapsedTime(time: Date | string | number): number {
-  const elapsed = Math.floor(
-    (new Date().getTime() - new Date(time).getTime()) / 1000
-  );
+  const elapsed = (new Date().getTime() - new Date(time).getTime()) / 1000;
   return elapsed;
 }
