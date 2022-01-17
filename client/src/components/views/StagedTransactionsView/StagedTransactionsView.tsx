@@ -20,16 +20,43 @@ function StagedTransactionsView(): JSX.Element {
   const { stagedTransactions, error }: UseStagedTransactionsAsync =
     useStagedTransactionsAsync();
   const query = useTestAsync();
+  const getStatusStatistics = (transactions: Array<Transaction>) => {
+    const statistics = {
+      pending1: 0,
+      staged: 0,
+      pending2: 0,
+    };
+    transactions.forEach(tx => {
+      switch(tx.status) {
+        case 0:
+          statistics.pending1++;
+          break;
+        case 1:
+          statistics.staged++;
+          break;
+        case 2:
+          statistics.pending2++;
+          break;
+      }
+    });
+    return (<p><b>Pending1</b>:{" "}{statistics.pending1}
+            {" / "}<b>Staged</b>:{" "}{statistics.staged}
+            {" / "}<b>Pending2</b>:{" "}{statistics.pending2}</p>);
+  }
   console.log(query);
   return (
     <div className={cx("staged-transactions-view")}>
       <h2>
         Staged Transactions:{" "}
         {typeof stagedTransactions?.length === "number"
-          ? stagedTransactions?.length
+          ? getStatusStatistics(stagedTransactions)
           : 0}
       </h2>
-      {error && <p>서버에 문제가 있습니다.</p>}
+      {error
+        ? <p>서버에 문제가 있습니다.</p>
+        : (typeof stagedTransactions !== "undefined"
+          ? getStatusStatistics(stagedTransactions)
+          : "")}
       <Table>
         <thead>
           <tr className="table-header">
