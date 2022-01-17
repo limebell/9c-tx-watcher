@@ -30,7 +30,20 @@ if (process.env.NODE_ENV === "development") {
 
 // Security
 if (process.env.NODE_ENV === "production") {
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+          styleSrc: ["'self'", "https://cdn.jsdelivr.net"],
+          imgSrc: ["*", "data:"],
+          connectSrc: ["'self'"],
+          frameSrc: ["'self'"],
+        },
+      },
+    })
+  );
 }
 
 // Add APIs
