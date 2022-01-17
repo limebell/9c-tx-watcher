@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import styles from "./Td.module.scss";
+import styles from "./Td.scss";
 
 interface TdProps {
   children: React.ReactNode;

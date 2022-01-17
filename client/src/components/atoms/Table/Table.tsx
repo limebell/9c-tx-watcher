@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import style from "./Table.module.scss";
+import style from "./Table.scss";
 
 const cx = classnames.bind(style);
 

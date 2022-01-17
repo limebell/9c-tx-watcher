@@ -3,7 +3,7 @@ import { Transaction } from "../../../types";
 import useStagedTransactionsAsync, {
   UseStagedTransactionsAsync,
 } from "../../../hooks/useStagedTransactionsAsync";
-import style from "./StagedTransactionsView.module.scss";
+import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
 import Table from "../../atoms/Table";
 import Td from "../../atoms/Td";
@@ -26,8 +26,8 @@ function StagedTransactionsView(): JSX.Element {
       staged: 0,
       pending2: 0,
     };
-    transactions.forEach(tx => {
-      switch(tx.status) {
+    transactions.forEach((tx) => {
+      switch (tx.status) {
         case 0:
           statistics.pending1++;
           break;
@@ -39,10 +39,16 @@ function StagedTransactionsView(): JSX.Element {
           break;
       }
     });
-    return (<p><b>Pending1</b>:{" "}{statistics.pending1}
-            {" / "}<b>Staged</b>:{" "}{statistics.staged}
-            {" / "}<b>Pending2</b>:{" "}{statistics.pending2}</p>);
-  }
+    return (
+      <p>
+        <b>Pending1</b>: {statistics.pending1}
+        {" / "}
+        <b>Staged</b>: {statistics.staged}
+        {" / "}
+        <b>Pending2</b>: {statistics.pending2}
+      </p>
+    );
+  };
   console.log(query);
   return (
     <div className={cx("staged-transactions-view")}>
@@ -52,11 +58,13 @@ function StagedTransactionsView(): JSX.Element {
           ? stagedTransactions?.length
           : 0}
       </h2>
-      {error
-        ? <p>서버에 문제가 있습니다.</p>
-        : (typeof stagedTransactions !== "undefined"
-          ? getStatusStatistics(stagedTransactions)
-          : "")}
+      {error ? (
+        <p>서버에 문제가 있습니다.</p>
+      ) : typeof stagedTransactions !== "undefined" ? (
+        getStatusStatistics(stagedTransactions)
+      ) : (
+        ""
+      )}
       <Table>
         <thead>
           <tr className="table-header">
@@ -71,7 +79,9 @@ function StagedTransactionsView(): JSX.Element {
           {stagedTransactions?.map((transaction: Transaction) => {
             return (
               <tr key={transaction.txId}>
-                <Td className="tx-id">{transaction.txId}</Td>
+                <Td className="tx-id">
+                  <pre>{transaction.txId}</pre>
+                </Td>
                 <Td className="nonce">{transaction.nonce}</Td>
                 <Td className="actions">{transaction.actions[0]}</Td>
                 <Td className="createdAt">
@@ -81,21 +91,20 @@ function StagedTransactionsView(): JSX.Element {
                   className={`status ${getStatusColor(
                     Number(transaction.status)
                   )}`}
-                  // FIXME: scss module is not loaded to browser
-                  style={{
-                    color: getStatusColor(Number(transaction.status)),
-                    fontWeight: "bold",
-                  }}
                 >
                   {getStatusAlias(Number(transaction.status))}
-                  <br/>
-                  <span style={{
-                    color: "black",
-                    fontWeight: "lighter",
-                    fontSize: "smaller"
-                  }}>
+                  <br />
+                  <span
+                    style={{
+                      color: "black",
+                      fontWeight: "lighter",
+                      fontSize: "smaller",
+                    }}
+                  >
                     {Number(transaction.status) === 0
-                      ? "\n(for " + getElapsedTime(transaction.createdAt) + " seconds)"
+                      ? "\n(for " +
+                        getElapsedTime(transaction.createdAt) +
+                        " seconds)"
                       : ""}
                   </span>
                 </Td>
