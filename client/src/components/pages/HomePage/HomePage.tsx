@@ -1,8 +1,8 @@
 import React from "react";
-import NonceView from "../../organisms/NonceView";
+import NonceView from "../../views/NonceView";
 import PageTemplate from "../../templates/PageTemplate";
-import StagedTransactionsView from "../../organisms/StagedTransactionsView";
-import AddressesView from "../../organisms/AddressesView";
+import StagedTransactionsView from "../../views/StagedTransactionsView";
+import AddressesView from "../../views/AddressesView";
 
 function HomePage(): JSX.Element {
   return (

@@ -1,7 +1,7 @@
-import { useQuery, UseQueryResult } from "react-query";
+import { useQuery } from "react-query";
 import { STAGED_TRANSACTIONS_URL } from "../utils/config";
-import api from "../utils/instance";
 import { StagedTransactions, Transaction } from "../types";
+import api from "../utils/instance";
 
 type StagedTransactionResponse = {
   status: string;
@@ -11,20 +11,13 @@ type StagedTransactionResponse = {
   dataUpdatedAt: number | Date;
   error: any;
 };
-function useStagedTransactionsAsync(): StagedTransactionResponse {
+
+export default function useTestAsync(): StagedTransactionResponse {
   const fetcher = (): Promise<StagedTransactions> =>
     api.get(STAGED_TRANSACTIONS_URL).then((response) => response.data);
-  const {
-    status,
-    isLoading,
-    isSuccess,
-    data,
-    error,
-    dataUpdatedAt,
-  }: UseQueryResult<StagedTransactions> = useQuery<StagedTransactions>(
+  const { status, isLoading, isSuccess, data, error, dataUpdatedAt } = useQuery(
     STAGED_TRANSACTIONS_URL,
-    fetcher,
-    { refetchInterval: 1000 }
+    fetcher
   );
   return {
     status,
@@ -36,8 +29,4 @@ function useStagedTransactionsAsync(): StagedTransactionResponse {
   };
 }
 
-export default useStagedTransactionsAsync;
-
-export type UseStagedTransactionsAsync = ReturnType<
-  typeof useStagedTransactionsAsync
->;
+export type UseTestAsync = ReturnType<typeof useTestAsync>;
