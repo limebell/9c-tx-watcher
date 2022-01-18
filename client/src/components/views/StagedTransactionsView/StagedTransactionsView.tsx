@@ -1,11 +1,12 @@
 import React from "react";
 import { Transaction } from "../../../types";
-import useStagedTransactionsAsync, {
-  UseStagedTransactionsAsync,
-} from "../../../hooks/useStagedTransactionsAsync";
+import useTransactionsAsync, {
+  UseTransactionsAsync,
+} from "../../../hooks/useTransactionsAsync";
 import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
-import Table from "../../atoms/Table";
+import { Link } from "react-router-dom";
+import { Table } from "react-bootstrap";
 import Td from "../../atoms/Td";
 import {
   getElapsedTime,
@@ -16,8 +17,8 @@ import {
 const cx = classnames.bind(style);
 
 function StagedTransactionsView(): JSX.Element {
-  const { stagedTransactions, error }: UseStagedTransactionsAsync =
-    useStagedTransactionsAsync();
+  const { stagedTransactions, error }: UseTransactionsAsync =
+    useTransactionsAsync();
   const getStatusStatistics = (transactions: Transaction[]) => {
     const statistics = {
       pending1: 0,
@@ -49,20 +50,23 @@ function StagedTransactionsView(): JSX.Element {
   };
   return (
     <div className={cx("staged-transactions-view")}>
-      <h2>
-        Staged Transactions:{" "}
-        {typeof stagedTransactions?.length === "number"
-          ? stagedTransactions?.length
-          : 0}
-      </h2>
-      {error ? (
-        <p>서버에 문제가 있습니다.</p>
-      ) : typeof stagedTransactions !== "undefined" ? (
-        getStatusStatistics(stagedTransactions)
-      ) : (
-        ""
-      )}
-      <Table>
+      <div className={cx("staged-transactions-view", "header")}>
+        <h2>
+          Staged Transactions:{" "}
+          {typeof stagedTransactions?.length === "number"
+            ? stagedTransactions?.length
+            : 0}
+        </h2>
+        {error ? (
+          <p className={"error"}>서버에 문제가 있습니다.</p>
+        ) : typeof stagedTransactions !== "undefined" ? (
+          getStatusStatistics(stagedTransactions)
+        ) : (
+          ""
+        )}
+      </div>
+
+      <Table striped bordered hover>
         <thead>
           <tr className="table-header">
             <th>Transaction Id</th>
@@ -81,7 +85,7 @@ function StagedTransactionsView(): JSX.Element {
                 </Td>
                 <Td className="nonce">{transaction.nonce}</Td>
                 <Td className="actions">{transaction.actions[0]}</Td>
-                <Td className="createdAt">
+                <Td className="created-at">
                   {new Date(transaction.createdAt).toUTCString()}
                 </Td>
                 <Td

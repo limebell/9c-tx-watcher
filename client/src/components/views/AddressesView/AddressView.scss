@@ -1,0 +1,12 @@
+.address-view {
+  &.description {
+    display: flex;
+    align-items: center;
+  }
+  .address-type {
+    margin-right: 1rem;
+  }
+  .address {
+    margin: 0;
+  }
+}

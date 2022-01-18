@@ -3,6 +3,7 @@ import NonceView from "../../views/NonceView";
 import PageTemplate from "../../templates/PageTemplate";
 import StagedTransactionsView from "../../views/StagedTransactionsView";
 import AddressesView from "../../views/AddressesView";
+import DiscardedTransactionsView from "../../views/DiscardedTransactionsView";
 
 function HomePage(): JSX.Element {
   return (
@@ -11,6 +12,7 @@ function HomePage(): JSX.Element {
       <NonceView />
       <AddressesView />
       <StagedTransactionsView />
+      <DiscardedTransactionsView />
     </PageTemplate>
   );
 }
