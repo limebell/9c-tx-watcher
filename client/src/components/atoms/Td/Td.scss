@@ -1,5 +1,12 @@
 @import "../../../styles/utils.scss";
 .td {
+  vertical-align: middle;
+  pre {
+    margin: 0;
+  }
+  &.nonce {
+    width: 5%;
+  }
   &.status {
     font-weight: bold;
     &.red {
