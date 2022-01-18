@@ -3,7 +3,7 @@ interface Status {
   color: string;
 }
 
-export const status: Array<Status> = [
+export const status: Status[] = [
   { alias: "Pending1", color: "orange" },
   { alias: "Staged", color: "blue" },
   { alias: "Pending2", color: "purple" },

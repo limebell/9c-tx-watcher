@@ -12,9 +12,9 @@ export interface StagedTransactions {
 }
 
 export interface Transaction {
-  actions: Array<string | undefined>;
-  txId: string | undefined;
-  nonce: number | undefined;
+  actions: string[];
+  txId: string;
+  nonce: number;
   createdAt: string | number | Date;
   status: number;
 }
