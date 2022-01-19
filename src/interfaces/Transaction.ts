@@ -10,6 +10,7 @@ export interface Transaction {
   actions: string[];
   txId: string;
   nonce: number;
-  createdAt: string;
+  createdAt: number;
+  stagedAt: number;
   status: TransactionStatus;
 }

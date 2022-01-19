@@ -6,15 +6,17 @@ export interface Nonce {
   nextTxNonce: number;
 }
 
-export interface StagedTransactions {
+export interface TransactionResponseData {
   stagedTransactions: Array<Transaction> | undefined;
-  transactions: Array<Transaction> | undefined;
+  discardedTransactions: Array<Transaction> | undefined;
+  averageStagedTime: number | undefined;
 }
 
 export interface Transaction {
   actions: string[];
   txId: string;
   nonce: number;
-  createdAt: string | number | Date;
+  createdAt: number;
+  stagedAt: number;
   status: number;
 }

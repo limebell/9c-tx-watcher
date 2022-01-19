@@ -185,7 +185,8 @@ async function update() {
           actions: value.actions.map((action) => getTypeId(action.inspection)),
           txId: value.id,
           nonce: value.nonce,
-          createdAt: value.timestamp,
+          createdAt: new Date(value.timestamp).getTime(),
+          stagedAt: -1,
           status: TransactionStatus.Pending1,
         };
       } else {
@@ -194,6 +195,7 @@ async function update() {
 
       if (targetTxIds?.includes(transaction.txId)) {
         transaction.status = TransactionStatus.Staged;
+        transaction.stagedAt = Date.now();
       } else if (transaction.status === TransactionStatus.Staged) {
         transaction.status = TransactionStatus.Pending2;
       }
@@ -232,8 +234,7 @@ async function update() {
               'Transaction "' +
               id +
               '" is discarded after ' +
-              (new Date().valueOf() - new Date(value.createdAt).valueOf()) /
-                1000 +
+              (Date.now() - value.createdAt) / 1000 +
               " seconds.\n";
             transactionsToUpdate.push(value);
           } else {
@@ -260,8 +261,7 @@ async function warn() {
   // Warn via slack that the transaction with id is pending for long time.
   let count: number = 0;
   transactions.forEach((tx) => {
-    const createdAt = tx.createdAt;
-    const elapsed = new Date().valueOf() - new Date(createdAt).valueOf();
+    const elapsed = Date.now() - tx.createdAt;
 
     if (elapsed > WARN_TIMEOUT) {
       count++;
@@ -333,14 +333,27 @@ export async function getNextNonce(req: Request, res: Response) {
  * @returns
  */
 export async function getTransactions(req: Request, res: Response) {
-  var transactions = await transactionDao.getAll();
+  let transactions = await transactionDao.getAll();
   transactions =
     transactions === undefined ? new Array<Transaction>() : transactions;
-  // Display discarded transactions only
+  let discardedTransactions = new Array<Transaction>();
+  let sum = 0;
+  let count = 0;
+  transactions.forEach((tx) => {
+    if (
+      tx.status === TransactionStatus.Staged ||
+      tx.status === TransactionStatus.Pending2 ||
+      tx.status === TransactionStatus.Included
+    ) {
+      sum += tx.stagedAt - tx.createdAt;
+      count++;
+    } else if (tx.status === TransactionStatus.Discarded) {
+      discardedTransactions.push(tx);
+    }
+  });
   return res.status(OK).json({
     stagedTransactions: stagedTransactions,
-    transactions: transactions.filter(
-      (tx) => tx.status === TransactionStatus.Discarded
-    ),
+    discardedTransactions: discardedTransactions,
+    averageStagedTime: sum / count,
   });
 }
