@@ -5,9 +5,8 @@ import useTransactionsAsync, {
 } from "../../../hooks/useTransactionsAsync";
 import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
-import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
-import Td from "../../atoms/Td";
+import Td from "../../props/Td";
 import {
   getElapsedTime,
   getStatusAlias,

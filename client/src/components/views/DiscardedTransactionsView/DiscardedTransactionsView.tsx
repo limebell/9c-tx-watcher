@@ -6,7 +6,7 @@ import useTransactionsAsync, {
 } from "../../../hooks/useTransactionsAsync";
 import { Table } from "react-bootstrap";
 import { Transaction } from "../../../types";
-import Td from "../../atoms/Td";
+import Td from "../../props/Td";
 import { getStatusAlias, getStatusColor } from "../../../utils/functions";
 
 const cx = classNames.bind(styles);
