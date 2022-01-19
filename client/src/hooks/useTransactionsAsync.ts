@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "react-query";
 import { STAGED_TRANSACTIONS_URL } from "../utils/config";
 import api from "../utils/instance";
-import { StagedTransactions, Transaction } from "../types";
+import { TransactionResponseData, Transaction } from "../types";
 
 type TransactionsResponse = {
   status: string;
@@ -9,11 +9,12 @@ type TransactionsResponse = {
   isSuccess: boolean;
   stagedTransactions: Transaction[] | undefined;
   discardedTransactions: Transaction[] | undefined;
+  averageStagedTime: number | undefined;
   dataUpdatedAt: number | Date;
   error: any;
 };
 function useTransactionsAsync(): TransactionsResponse {
-  const fetcher = (): Promise<StagedTransactions> =>
+  const fetcher = (): Promise<TransactionResponseData> =>
     api.get(STAGED_TRANSACTIONS_URL).then((response) => response.data);
   const {
     status,
@@ -22,13 +23,10 @@ function useTransactionsAsync(): TransactionsResponse {
     data,
     error,
     dataUpdatedAt,
-  }: UseQueryResult<StagedTransactions> = useQuery<StagedTransactions>(
+  }: UseQueryResult<TransactionResponseData> = useQuery<TransactionResponseData>(
     STAGED_TRANSACTIONS_URL,
     fetcher,
     { refetchInterval: 1000 }
-  );
-  const discardedTransactions = data?.transactions?.filter(
-    (transaction: Transaction) => transaction.status === 4
   );
   return {
     status,
@@ -36,7 +34,8 @@ function useTransactionsAsync(): TransactionsResponse {
     isSuccess,
     error,
     stagedTransactions: data?.stagedTransactions,
-    discardedTransactions,
+    discardedTransactions: data?.discardedTransactions,
+    averageStagedTime: data?.averageStagedTime,
     dataUpdatedAt,
   };
 }

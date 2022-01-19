@@ -5,9 +5,8 @@ import useTransactionsAsync, {
 } from "../../../hooks/useTransactionsAsync";
 import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
-import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
-import Td from "../../atoms/Td";
+import Td from "../../props/Td";
 import {
   getElapsedTime,
   getStatusAlias,
@@ -17,7 +16,7 @@ import {
 const cx = classnames.bind(style);
 
 function StagedTransactionsView(): JSX.Element {
-  const { stagedTransactions, error }: UseTransactionsAsync =
+  const { stagedTransactions, averageStagedTime, error }: UseTransactionsAsync =
     useTransactionsAsync();
   const getStatusStatistics = (transactions: Transaction[]) => {
     const statistics = {
@@ -65,7 +64,11 @@ function StagedTransactionsView(): JSX.Element {
           ""
         )}
       </div>
-
+      Average staged time:{" "}
+      {averageStagedTime === undefined
+        ? -1
+        : (averageStagedTime / 1000).toFixed(2)}{" "}
+      seconds
       <Table striped bordered hover>
         <thead>
           <tr className="table-header">
@@ -104,9 +107,14 @@ function StagedTransactionsView(): JSX.Element {
                   >
                     {Number(transaction.status) === 0
                       ? "\n(for " +
-                        getElapsedTime(transaction.createdAt) +
+                        getElapsedTime(transaction.createdAt).toFixed(2) +
                         " seconds)"
-                      : ""}
+                      : "\n(staged after " +
+                        (
+                          (transaction.stagedAt - transaction.createdAt) /
+                          1000
+                        ).toFixed(2) +
+                        " seconds)"}
                   </span>
                 </Td>
               </tr>
