@@ -1,13 +1,13 @@
 import React from "react";
 
-type HeaderProps = {
-  labels: (string | number)[];
-};
+interface HeaderProps<T> {
+  labels: T[];
+}
 
-function TransactionTableHeader({ labels }: HeaderProps): JSX.Element {
+function TransactionTableHeader<T>({ labels }: HeaderProps<T>): JSX.Element {
   return (
     <tr>
-      {labels.map((label: string | number, index: number) => {
+      {labels.map((label: T, index: number) => {
         return <th key={index}>{label}</th>;
       })}
     </tr>
