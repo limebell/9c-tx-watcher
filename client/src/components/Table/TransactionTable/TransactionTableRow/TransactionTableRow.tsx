@@ -12,10 +12,14 @@ import {
 type Transactions = {
   transactions: Transaction[] | undefined;
 };
+type RenderTransactionTableRowResult = () => JSX.Element[] | undefined;
 
 const cx = classNames.bind(styles);
 
-function TransactionTableRow({ transactions, ...props }: Transactions) {
+function TransactionTableRow({
+  transactions,
+  ...props
+}: Transactions): RenderTransactionTableRowResult {
   const renderTransactionTableRow: () => JSX.Element[] | undefined = () =>
     transactions?.map((transaction: Transaction) => {
       return (
@@ -48,9 +52,9 @@ function TransactionTableRow({ transactions, ...props }: Transactions) {
                       getElapsedTime(transaction.createdAt).toFixed(2) +
                       " seconds)"
                     : "\n(staged after " +
-                      (
-                        (transaction.stagedAt - transaction.createdAt) /
-                        1000
+                      getElapsedTime(
+                        transaction.stagedAt,
+                        transaction.createdAt
                       ).toFixed(2) +
                       " seconds)"}
                 </span>
