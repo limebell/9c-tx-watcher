@@ -1,21 +1,29 @@
 import React from "react";
-import { Transaction } from "../../../types";
-import Td from "../../atoms/Td";
+import { Transaction } from "../../../../types";
+import classNames from "classnames";
+import styles from "./TransactionTableRow.scss";
+import Td from "../../../atoms/Td";
 import {
   getStatusAlias,
   getElapsedTime,
   getStatusColor,
-} from "../../../utils/functions";
+} from "../../../../utils/functions";
 
 type Transactions = {
   transactions: Transaction[] | undefined;
 };
 
-function TransactionTableRow({ transactions }: Transactions) {
+const cx = classNames.bind(styles);
+
+function TransactionTableRow({ transactions, ...props }: Transactions) {
   const renderTransactionTableRow: () => JSX.Element[] | undefined = () =>
     transactions?.map((transaction: Transaction) => {
       return (
-        <tr key={transaction.txId}>
+        <tr
+          key={transaction.txId}
+          {...props}
+          className={cx("transaction-table-row")}
+        >
           <Td className="tx-id">
             <pre>{transaction.txId}</pre>
           </Td>
@@ -25,19 +33,16 @@ function TransactionTableRow({ transactions }: Transactions) {
             {new Date(transaction.createdAt).toUTCString()}
           </Td>
           <Td
-            className={`status ${getStatusColor(Number(transaction.status))}`}
+            className={classNames(
+              "status",
+              getStatusColor(Number(transaction.status))
+            )}
           >
             {getStatusAlias(Number(transaction.status))}
             {Number(transaction.status) !== 4 && (
               <>
                 <br />
-                <span
-                  style={{
-                    color: "black",
-                    fontWeight: "lighter",
-                    fontSize: "smaller",
-                  }}
-                >
+                <span className={cx("detail")}>
                   {Number(transaction.status) === 0
                     ? "\n(for " +
                       getElapsedTime(transaction.createdAt).toFixed(2) +

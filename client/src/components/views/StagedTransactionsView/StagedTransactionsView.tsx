@@ -6,8 +6,8 @@ import useTransactionsAsync, {
 import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
 import { Table } from "react-bootstrap";
-import TransactionTableHeader from "../../TransactionTable/TransactionTableHeader";
-import TransactionTableRow from "../../TransactionTable/TransactionTableRow";
+import TableHeader from "../../Table/TableHeader";
+import TransactionTableRow from "../../Table/TransactionTable/TransactionTableRow";
 
 const cx = classnames.bind(style);
 const headLabels: string[] = [
@@ -77,7 +77,7 @@ function StagedTransactionsView(): JSX.Element {
       seconds
       <Table striped bordered hover>
         <thead>
-          <TransactionTableHeader labels={headLabels} />
+          <TableHeader labels={headLabels} />
         </thead>
         <tbody>{renderTransactionsTableRow()}</tbody>
       </Table>

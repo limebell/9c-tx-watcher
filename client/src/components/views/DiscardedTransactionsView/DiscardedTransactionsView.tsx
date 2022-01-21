@@ -5,8 +5,8 @@ import useTransactionsAsync, {
   UseTransactionsAsync,
 } from "../../../hooks/useTransactionsAsync";
 import { Table } from "react-bootstrap";
-import TransactionTableHeader from "../../TransactionTable/TransactionTableHeader";
-import TransactionTableRow from "../../TransactionTable/TransactionTableRow";
+import TableHeader from "../../Table/TableHeader";
+import TransactionTableRow from "../../Table/TransactionTable/TransactionTableRow";
 
 const cx = classNames.bind(styles);
 const headLabels: string[] = [
@@ -34,7 +34,7 @@ function DiscardedTransactionsView(): JSX.Element {
       {error && <p>서버에 문제가 있습니다.</p>}
       <Table striped bordered hover>
         <thead>
-          <TransactionTableHeader labels={headLabels} />
+          <TableHeader labels={headLabels} />
         </thead>
         <tbody>{renderTransactionsTableRow()}</tbody>
       </Table>
