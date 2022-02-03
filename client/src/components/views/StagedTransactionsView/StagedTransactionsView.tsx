@@ -6,18 +6,24 @@ import useTransactionsAsync, {
 import style from "./StagedTransactionsView.scss";
 import classnames from "classnames";
 import { Table } from "react-bootstrap";
-import Td from "../../atoms/Td";
-import {
-  getElapsedTime,
-  getStatusAlias,
-  getStatusColor,
-} from "../../../utils/functions";
+import TableHeader from "../../Table/TableHeader";
+import TransactionTableRow from "../../Table/TransactionTable/TransactionTableRow";
 
 const cx = classnames.bind(style);
+const headLabels: string[] = [
+  "Transaction Id",
+  "Nonce",
+  "Actions",
+  "Created At",
+  "Status",
+];
 
 function StagedTransactionsView(): JSX.Element {
   const { stagedTransactions, averageStagedTime, error }: UseTransactionsAsync =
     useTransactionsAsync();
+  const renderTransactionsTableRow = TransactionTableRow({
+    transactions: stagedTransactions,
+  });
   const getStatusStatistics = (transactions: Transaction[]) => {
     const statistics = {
       pending1: 0,
@@ -71,56 +77,9 @@ function StagedTransactionsView(): JSX.Element {
       seconds
       <Table striped bordered hover>
         <thead>
-          <tr className="table-header">
-            <th>Transaction Id</th>
-            <th>Nonce</th>
-            <th>Actions</th>
-            <th>Created At</th>
-            <th>Status</th>
-          </tr>
+          <TableHeader labels={headLabels} />
         </thead>
-        <tbody>
-          {stagedTransactions?.map((transaction: Transaction) => {
-            return (
-              <tr key={transaction.txId}>
-                <Td className="tx-id">
-                  <pre>{transaction.txId}</pre>
-                </Td>
-                <Td className="nonce">{transaction.nonce}</Td>
-                <Td className="actions">{transaction.actions[0]}</Td>
-                <Td className="created-at">
-                  {new Date(transaction.createdAt).toUTCString()}
-                </Td>
-                <Td
-                  className={`status ${getStatusColor(
-                    Number(transaction.status)
-                  )}`}
-                >
-                  {getStatusAlias(Number(transaction.status))}
-                  <br />
-                  <span
-                    style={{
-                      color: "black",
-                      fontWeight: "lighter",
-                      fontSize: "smaller",
-                    }}
-                  >
-                    {Number(transaction.status) === 0
-                      ? "\n(for " +
-                        getElapsedTime(transaction.createdAt).toFixed(2) +
-                        " seconds)"
-                      : "\n(staged after " +
-                        (
-                          (transaction.stagedAt - transaction.createdAt) /
-                          1000
-                        ).toFixed(2) +
-                        " seconds)"}
-                  </span>
-                </Td>
-              </tr>
-            );
-          })}
-        </tbody>
+        <tbody>{renderTransactionsTableRow()}</tbody>
       </Table>
     </div>
   );

@@ -5,15 +5,24 @@ import useTransactionsAsync, {
   UseTransactionsAsync,
 } from "../../../hooks/useTransactionsAsync";
 import { Table } from "react-bootstrap";
-import { Transaction } from "../../../types";
-import Td from "../../atoms/Td";
-import { getStatusAlias, getStatusColor } from "../../../utils/functions";
+import TableHeader from "../../Table/TableHeader";
+import TransactionTableRow from "../../Table/TransactionTable/TransactionTableRow";
 
 const cx = classNames.bind(styles);
+const headLabels: string[] = [
+  "Transaction Id",
+  "Nonce",
+  "Actions",
+  "Created At",
+  "Status",
+];
 
 function DiscardedTransactionsView(): JSX.Element {
   const { discardedTransactions, error }: UseTransactionsAsync =
     useTransactionsAsync();
+  const renderTransactionsTableRow = TransactionTableRow({
+    transactions: discardedTransactions,
+  });
   return (
     <div className={cx("discarded-transactions-view")}>
       <h2>
@@ -25,37 +34,9 @@ function DiscardedTransactionsView(): JSX.Element {
       {error && <p>서버에 문제가 있습니다.</p>}
       <Table striped bordered hover>
         <thead>
-          <tr className="table-header">
-            <th>Transaction Id</th>
-            <th>Nonce</th>
-            <th>Actions</th>
-            <th>Created At</th>
-            <th>Status</th>
-          </tr>
+          <TableHeader labels={headLabels} />
         </thead>
-        <tbody>
-          {discardedTransactions?.map((transaction: Transaction) => {
-            return (
-              <tr key={transaction.txId}>
-                <Td className="tx-id">
-                  <pre>{transaction.txId}</pre>
-                </Td>
-                <Td className="nonce">{transaction.nonce}</Td>
-                <Td className="actions">{transaction.actions[0]}</Td>
-                <Td className="created-at">
-                  {new Date(transaction.createdAt).toUTCString()}
-                </Td>
-                <Td
-                  className={`status ${getStatusColor(
-                    Number(transaction.status)
-                  )}`}
-                >
-                  {getStatusAlias(Number(transaction.status))}
-                </Td>
-              </tr>
-            );
-          })}
-        </tbody>
+        <tbody>{renderTransactionsTableRow()}</tbody>
       </Table>
     </div>
   );
